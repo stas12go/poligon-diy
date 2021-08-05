@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\RestTestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,4 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('rest', RestTestController::class)->names('restTest');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__ . '/auth.php';
+
+
+Route::prefix('olympics')->namespace('Olympics')->group(function () {
+    Route::resource('athletes', 'AthleteController')->names('olympics.athletes');
+});
