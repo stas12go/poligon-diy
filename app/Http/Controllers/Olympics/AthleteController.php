@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Olympics;
 
 use App\Models\Athlete;
+use App\Models\Country;
+use App\Models\Sports;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AthleteController extends BaseController
 {
@@ -14,7 +17,7 @@ class AthleteController extends BaseController
      */
     public function index()
     {
-        $athletesList = Athlete::all();
+        $athletesList = Athlete::paginate(20);
 
         return view('olympics.athletes.index', compact('athletesList'));
     }
@@ -48,7 +51,17 @@ class AthleteController extends BaseController
      */
     public function show($id)
     {
-        //
+        $athlete = Athlete::findOrFail($id);
+        $sport = DB::table('sports')
+            ->join('athletes', 'sports.id', '=', 'athletes.sport_id')
+            ->where('athletes.id', '=', $id)
+            ->first(['sports.id', 'sports.name']);
+        $country = DB::table('countries')
+            ->join('athletes', 'countries.id', '=', 'athletes.country_id')
+            ->where('athletes.id', '=', $id)
+            ->first(['countries.id', 'countries.name']);
+
+        return view('olympics.athletes.show', compact('id', 'athlete', 'sport', 'country'));
     }
 
     /**
@@ -59,7 +72,11 @@ class AthleteController extends BaseController
      */
     public function edit($id)
     {
-        //
+        $athlete = Athlete::findOrFail($id);
+        $sportsList = DB::table('sports')->get();
+        $countriesList = DB::table('countries')->get();
+
+        return view('olympics.athletes.edit', compact('id', 'athlete', 'sportsList', 'countriesList'));
     }
 
     /**
@@ -71,7 +88,7 @@ class AthleteController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($request->all(), $id);
     }
 
     /**

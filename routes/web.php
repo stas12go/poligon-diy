@@ -26,4 +26,6 @@ require __DIR__ . '/auth.php';
 
 Route::prefix('olympics')->namespace('Olympics')->group(function () {
     Route::resource('athletes', 'AthleteController')->names('olympics.athletes');
+    Route::resource('countries', 'CountryController')->names('olympics.countries');
+    Route::resource('sports', 'SportController')->names('olympics.sports');
 });
